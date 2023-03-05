@@ -1,0 +1,29 @@
+version: "3.5"
+
+services:
+  mariadb:
+    build: ./requirements/mariadb
+    container_name: mariadb
+    image: mariadb
+    restart: always
+    ports:
+      - 3306:3306
+    env_file:
+      - .env
+    networks:
+      - net
+    volumes:
+      - db:/var/lib/mysql
+
+volumes:
+  db:
+    name: DB
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/ariahi/data
+
+networks:
+  net:
+    driver: bridge
