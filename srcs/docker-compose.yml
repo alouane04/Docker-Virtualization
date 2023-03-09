@@ -14,6 +14,35 @@ services:
       - net
     volumes:
       - db:/var/lib/mysql
+  nginx:
+    build: ./requirements/nginx
+    container_name: nginx
+    image: nginx
+    env_file:
+      - .env
+    ports:
+      - '443:443'
+    restart: on-failure
+    volumes:
+      - wp::/var/www/html
+    networks:
+      - net
+  wordpress:
+    build: ./requirements/wordpress
+    container_name: wordpress
+    image: wordpress
+    env_file:
+      - .env
+    restart: always
+    depends_on:
+      - nginx
+      - mariadb
+    ports:
+      - 9000:9000
+    volumes:
+      - data_wp:/var/www/html/
+    networks:
+      - net
 
 volumes:
   db:
@@ -22,7 +51,14 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/ariahi/data
+      device: /home/ariahi/db
+  wp:
+    name: WP
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/ariahi/wp
 
 networks:
   net:
