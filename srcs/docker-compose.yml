@@ -40,7 +40,7 @@ services:
     ports:
       - 9000:9000
     volumes:
-      - data_wp:/var/www/html/
+      - wp:/var/www/html/
     networks:
       - net
 
