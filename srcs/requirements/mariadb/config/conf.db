@@ -1,0 +1,5 @@
+CREATE DATABASE if not exists mr_db;
+CREATE USER 'alouane'@'%';
+GRANT ALL PRIVILEGES ON mr_db.* to 'alouane'@'%' IDENTIFIED BY 'me';
+alter user 'root'@'localhost' identified by 'me';
+FLUSH PRIVILEGES;

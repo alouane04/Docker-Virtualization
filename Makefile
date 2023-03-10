@@ -4,7 +4,7 @@ up:
 	sudo mkdir -p /home/ariahi/db
 	sudo mkdir -p /home/ariahi/wp
 
-	docker-compose -f ./srcs/docker-compose.yml up -d
+	docker-compose -f ./srcs/docker-compose.yml up --build
 
 down :
 	docker-compose -f ./srcs/docker-compose.yml down
