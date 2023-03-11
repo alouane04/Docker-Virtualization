@@ -43,6 +43,46 @@ services:
       - wp:/var/www/html/
     networks:
       - net
+  adminer:
+    build: ./requirements/bonus/adminer
+    container_name: adminer
+    image: adminer
+    restart: on-failure
+    ports:
+      - 8080:8080
+    networks:
+      - net
+  cadvisor:
+    build: ./requirements/bonus/cadvisor
+    container_name: cadvisor
+    image: cadvisor
+    restart: on-failure
+    ports:
+      - 8081:8081
+    volumes:
+      - "/:/rootfs:ro"
+      - "/var/run:/var/run:rw"
+      - "/sys:/sys:ro"
+      - "/var/lib/docker/:/var/lib/docker:ro"
+    networks:
+      - net
+  ftp:
+    build: ./requirements/bonus/ftp
+    container_name: ftp
+    image: ftp
+    restart: on-failure
+    ports:
+      - '21:21'
+      - '30000-30009:30000-30009'
+      - '20:20'
+    env_file:
+      - .env
+    depends_on:
+      - wordpress
+    volumes:
+      - wp:/home/ariahi/ftp
+    networks:
+      - net
 
 volumes:
   db:

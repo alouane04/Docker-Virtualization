@@ -1,5 +1,5 @@
-CREATE DATABASE if not exists mr_db;
-CREATE USER 'alouane'@'%';
-GRANT ALL PRIVILEGES ON mr_db.* to 'alouane'@'%' IDENTIFIED BY 'me';
-alter user 'root'@'localhost' identified by 'me';
+CREATE DATABASE if not exists $DB_name;
+CREATE USER '$DB_user'@'%';
+GRANT ALL PRIVILEGES ON $DB_name.* to '$DB_user'@'%' IDENTIFIED BY '$DB_password';
+alter user 'root'@'localhost' identified by '$DB_password';
 FLUSH PRIVILEGES;
