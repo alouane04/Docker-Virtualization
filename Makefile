@@ -1,8 +1,8 @@
 all: up
 
 up:
-	sudo mkdir -p /home/ariahi/db
-	sudo mkdir -p /home/ariahi/wp
+	mkdir -p /home/ariahi/db
+	mkdir -p /home/ariahi/wp
 
 	docker-compose -f ./srcs/docker-compose.yml up --build -d
 
