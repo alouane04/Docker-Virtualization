@@ -13,4 +13,4 @@ RUN mv cadvisor-v0.47.0-linux-amd64 cadvisor
 RUN chmod +x cadvisor
 
 # Running the cadvisor file.
-CMD ["./cadvisor"]
+CMD ["./cadvisor", "--port=8081"]

@@ -1,9 +1,25 @@
-FROM debian:buster
+FROM    debian:buster
 
-RUN apt-get update -y && apt-get upgrade -y && apt-get install -y php-mysql php-fpm curl
+# This command is installing the following packages:
+# - php
+# - php-curl
+# - php-mysql
+# - php7.3-fpm
+# - curl
+# - sendmail
+RUN apt update && apt install -y php php-curl php-mysql && apt install -y php7.3-fpm && apt install -y curl
 
-COPY /conf/conf.sh /
+# Creating a directory for the php-fpm socket.
+RUN mkdir -p /run/php/
 
-RUN chmod +x /conf.sh
+# Copying the file conf.sh from the conf directory in the current directory to the script.sh file in the root directory.
+COPY ./conf/conf.sh /script.sh
 
-ENTRYPOINT ["/bin/sh", "/conf.sh"]
+# Making the script executable.
+RUN chmod +x /script.sh
+
+# Running the script.sh file.
+ENTRYPOINT [ "/script.sh" ]
+
+# Running the php-fpm7.3 command (The PHP FastCGI Process Manager.) with the -F flag (The -F flag means that the process manager will stay in the foreground and will not daemonize.).
+CMD [ "php-fpm7.3", "-F" ]

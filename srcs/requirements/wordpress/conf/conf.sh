@@ -1,55 +1,84 @@
-#!/bin/sh
+#!/bin/bash
 
-apt-get update -y
-apt-get install php-fpm curl php-mysql -y
+# Downloading the wp-cli.phar file from the github repository (it's allowing for transfer data from/to server using HTTP/HTTPS/FTP...).
 curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+
+# Changing the owner of the directory of /var/www/html and all subdirectories to www-data:www-data.
+chown -R www-data:www-data /var/www/html/
+
+# Changing the owner of /var/www/html/ to 755
+chmod -R 755 /var/www/html/ 
+
+# Making the file executable.
 chmod +x wp-cli.phar
+
+# Moving the wp-cli.phar file to the /usr/local/bin/wp directory.
 mv wp-cli.phar /usr/local/bin/wp
-sed -i -e 's/listen =.*/listen = 9000/g' /etc/php/7.3/fpm/pool.d/www.conf
-mkdir -p /var/www/html
-wp core download --path="/var/www/html/" --allow-root
-service php7.3-fpm start
-wp config create --dbname=$DB_name --dbuser=$DB_user --dbpass=$DB_password --dbhost=$DB_host --path=/var/www/html --allow-root --skip-check
-wp core install --url=$DOMAIN_NAME --title=$WP_title --admin_user=$WP_admin_user --admin_password=$WP_admin_password --admin_email=$WP_admin_email --allow-root --path=/var/www/html
-wp user create sayar sayar@gmail.com --user_pass=$DB_password --role=author --allow-root --path=/var/www/html/
-service php7.3-fpm stop
-php-fpm7.3 -F
 
+# Changing the directory to /var/www/html/
+cd /var/www/html/
 
+# Downloading the latest version of WordPress.
+wp core download --allow-root
 
+# It creates a new file called wp-config.php.
+touch wp-config.php
 
+# It copies the default configuration to wp-config.php
+cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
 
+# Replacing the line 36 of the file /etc/php/7.3/fpm/pool.d/www.conf with the value 9000.
+sed -i '36 s/\/run\/php\/php7.3-fpm.sock/9000/' /etc/php/7.3/fpm/pool.d/www.conf
 
-# #!/bin/bash
+# It's replacing the string "database_name_here" with the value of the variable  in the file
+# /var/www/html/wp-config.php.
+sed -i 's/database_name_here/'$DB_name'/g' /var/www/html/wp-config.php
 
-# cd /var/www/html
+# It's replacing the string "username_here" with the value of the variable  in the file
+# /var/www/html/wp-config.php.
+sed -i 's/username_here/'$DB_user'/g' /var/www/html/wp-config.php
+# set The Hostname of the That base
 
-# rm -rf *
+# It's replacing the string "password_here" with the value of the variable  in the file
+# /var/www/html/wp-config.php.
+sed -i 's/password_here/'$DB_password'/g' /var/www/html/wp-config.php
 
-# curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+# It's replacing the string "localhost" with the value of the variable mariadb in the file
+# var/www/html/wp-config.php.
+sed -i 's/localhost/'mariadb'/g' /var/www/html/wp-config.php
 
-# chmod +x wp-cli.phar
+# It's a command that sets the value of the FORCE_SSL_ADMIN constant in the WordPress configuration
+# file to "false".
+# This constant controls whether SSL is forced for the WordPress admin area or not.
+wp config set FORCE_SSL_ADMIN 'false' --allow-root
 
-# mv wp-cli.phar /usr/local/bin/wp
+# It's a command that sets the value of the WP_REDIS_HOST constant in the WordPress configuration file
+# to "redis".
+# This constant controls the hostname of the Redis server.
+wp config set WP_REDIS_HOST 'redis' --allow-root
 
-# sed -i 's/listen = \/run\php\/php7.3-fpm.sock/listen = 9000/g' /etc/php/7.3/fpm/pool.d/www.conf
+# It's a command that sets the value of the WP_REDIS_PORT constant in the WordPress configuration file
+# to "6379".
+# This constant controls the port of the Redis server.
+wp config set WP_REDIS_PORT '6379' --allow-root
 
-# mkdir -p /var/www/html
+# It's a command that sets the value of the WP_CACHE constant in the WordPress configuration file to
+# "true".
+# This constant controls whether the object cache is enabled or not.
+wp config set WP_CACHE 'true' --allow-root
 
-# wp core download --path="/var/www/html/" --allow-root
+# It's a command that installs WordPress.
+wp core install --url=$DOMAIN_NAME --title="My Wordpress Site" --admin_user=$WP_admin_user --admin_password=$WP_admin_password --admin_email=$WP_admin_email --allow-root
 
-# service php7.3-fpm start
+# It's creating a new user with the username of , the email of , the password of
+#  and the role of author.
+wp user create $WP_user $WP_user_email --user_pass=$WP_user_password --role='author' --allow-root
 
-# wp config create --dbname=$DB_name --dbuser=$DB_user --dbpass=$DB_password --dbhost=$DB_host --path=/var/www/html --allow-root --skip-check --extra-php <<PHP
-# define ('WP_REDIS_HOST', 'redis');
-# define ('WP_REDIS_PORT', '6379');
-# PHP
+# It's installing and activating the plugin of redis-cache.
+wp plugin install redis-cache --activate --allow-root
 
-# wp core install --url=$DOMAIN_NAME --title=$WP_title --admin_user=$WP_admin_user --admin_password=$WP_password --admin_email=$WP_admin_email --allow-root --path=/var/www/html
+# It's a command that enables the object cache.
+wp redis enable --allow-root
 
-# wp user create $WP_user $WP_user_email --user_pass=$DB_password --role=author --allow-root --path=/var/www/html/
-
-# service php7.3-fpm stop
-
-# php-fpm7.3 -F
-
+# It's a command that executes the command line arguments.
+exec "$@"

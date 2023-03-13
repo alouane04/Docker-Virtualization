@@ -2,9 +2,9 @@ FROM debian:buster
 
 RUN apt-get update -y && apt-get upgrade -y && apt-get install -y apache2
 
-RUN mkdir -p /var/www/html/resume-site && chown -R www-data:www-data /var/www/html/resume-site 
+RUN service apache2 restart
 
-COPY ./tools/resume-site /var/www/html/resume-site
+COPY ./car /var/www/html
 
 COPY ./conf/default.conf /etc/apache2/site-available/default.conf
 
