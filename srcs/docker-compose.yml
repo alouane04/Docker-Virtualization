@@ -92,15 +92,15 @@ services:
       - 6379:6379
     networks:
       - net
-  # static_stite:
-  #   build: ./requirements/bonus/static_site
-  #   container_name: static_site
-  #   image: static_site
-  #   restart: on-failure
-  #   ports:
-  #     - 80:80
-  #   networks:
-  #     - net
+  static_stite:
+    build: ./requirements/bonus/static_site
+    container_name: static_site
+    image: static_site
+    restart: on-failure
+    ports:
+      - 80:80
+    networks:
+      - net
 
 volumes:
   db:
