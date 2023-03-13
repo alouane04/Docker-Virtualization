@@ -12,5 +12,5 @@ RUN mv cadvisor-v0.47.0-linux-amd64 cadvisor
 # Giving the permission to the cadvisor file to be executed.
 RUN chmod +x cadvisor
 
-# Running the cadvisor file.
+# Running the cadvisor file on port 8081.
 CMD ["./cadvisor", "--port=8081"]

@@ -1,5 +1,6 @@
 version: "3.5"
 
+# It's creating a service called mariadb, it's using the build command to build the image from the Dockerfile in the requirements/mariadb directory. It's giving the container the name mariadb, it's using the image mariadb, it's restarting the container always, it's exposing the port 3306, it's using the .env file, it's using the network net and it's mounting the volume db to the /var/lib/mysql directory.
 services:
   mariadb:
     build: ./requirements/mariadb
@@ -14,6 +15,7 @@ services:
       - net
     volumes:
       - db:/var/lib/mysql
+# It's creating a service called nginx, it's using the build command to build the image from the Dockerfile in the requirements/nginx directory. It's giving the container the name nginx, it's using the image nginx, it's restarting the container on failure, it's exposing the port 443, it's using the .env file, it's using the network net and it's mounting the volume wp to the /var/www/html directory.
   nginx:
     build: ./requirements/nginx
     container_name: nginx
@@ -27,6 +29,7 @@ services:
       - wp:/var/www/html
     networks:
       - net
+#  It's creating a service called wordpress, it's using the build command to build the image from the Dockerfile in the requirements/wordpress directory. It's giving the container the name wordpress, it's using the image wordpress, it's restarting the container always, it's using the .env file, it's using the network net and it's mounting the volume wp to the /var/www/html directory.
   wordpress:
     build: ./requirements/wordpress
     container_name: wordpress
@@ -43,6 +46,7 @@ services:
       - wp:/var/www/html/
     networks:
       - net
+# It's creating a service called adminer, it's using the build command to build the image from the Dockerfile in the requirements/bonus/adminer directory. It's giving the container the name adminer, it's using the image adminer, it's restarting the container on failure, it's exposing the port 8080, it's using the network net.
   adminer:
     build: ./requirements/bonus/adminer
     container_name: adminer
@@ -52,6 +56,7 @@ services:
       - 8080:8080
     networks:
       - net
+# It's creating a service called cadvisor, it's using the build command to build the image from the Dockerfile in the requirements/bonus/cadvisor directory. It's giving the container the name cadvisor, it's using the image cadvisor, it's restarting the container on failure, it's exposing the port 8081, it's using the network net.
   cadvisor:
     build: ./requirements/bonus/cadvisor
     container_name: cadvisor
@@ -66,6 +71,7 @@ services:
       - "/var/lib/docker/:/var/lib/docker:ro"
     networks:
       - net
+# It's creating a service called ftp, it's using the build command to build the image from the Dockerfile in the requirements/bonus/ftp directory. It's giving the container the name ftp, it's using the image ftp, it's restarting the container on failure, it's exposing the port 21, it's using the .env file, it's using the network net and it's mounting the volume wp to the /home/ariahi/ftp directory.
   ftp:
     build: ./requirements/bonus/ftp
     container_name: ftp
@@ -83,6 +89,7 @@ services:
       - wp:/home/ariahi/ftp
     networks:
       - net
+# It's creating a service called redis, it's using the build command to build the image from the Dockerfile in the requirements/bonus/redis directory. It's giving the container the name redis, it's using the image redis, it's restarting the container on failure, it's exposing the port 6379, it's using the network net.
   redis:
     build: ./requirements/bonus/redis
     container_name: redis
@@ -92,6 +99,7 @@ services:
       - 6379:6379
     networks:
       - net
+# It's creating a service called static_stite, it's using the build command to build the image from the Dockerfile in the requirements/bonus/static_site directory. It's giving the container the name static_stite, it's using the image static_stite, it's restarting the container on failure, it's exposing the port 80, it's using the network net.
   static_stite:
     build: ./requirements/bonus/static_site
     container_name: static_site
@@ -102,6 +110,7 @@ services:
     networks:
       - net
 
+# It's creating a volumes called DB/WP and mounting it to the /home/ariahi/db/wp directory.
 volumes:
   db:
     name: DB
@@ -118,6 +127,7 @@ volumes:
       o: bind
       device: /home/ariahi/wp
 
+# It's creating a network called net and it's using the bridge driver.
 networks:
   net:
     driver: bridge
