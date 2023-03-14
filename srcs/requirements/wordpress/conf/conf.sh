@@ -19,7 +19,14 @@ mv wp-cli.phar /usr/local/bin/wp
 cd /var/www/html/
 
 # Downloading the latest version of WordPress.
-wp core download --allow-root
+runuser -u www-data -- wp core download
+
+# It's a command that installs WordPress.
+runuser -u www-data -- wp core install --url=$DOMAIN_NAME --title="My Wordpress Site" --admin_user=$WP_admin_user --admin_password=$WP_admin_password --admin_email=$WP_admin_email
+
+# It's creating a new user with the username of , the email of , the password of
+#  and the role of author.
+runuser -u www-data -- wp user create $WP_user $WP_user_email --user_pass=$WP_user_password --role='author'
 
 # It creates a new file called wp-config.php.
 touch wp-config.php
@@ -50,35 +57,30 @@ sed -i 's/localhost/'mariadb'/g' /var/www/html/wp-config.php
 # It's a command that sets the value of the FORCE_SSL_ADMIN constant in the WordPress configuration
 # file to "false".
 # This constant controls whether SSL is forced for the WordPress admin area or not.
-wp config set FORCE_SSL_ADMIN 'false' --allow-root
+runuser -u www-data -- wp config set FORCE_SSL_ADMIN 'false'
+
+# It's installing and activating the plugin of redis-cache.
+runuser -u www-data -- wp plugin install redis-cache
+
+runuser -u www-data -- wp plugin activate redis-cache
 
 # It's a command that sets the value of the WP_REDIS_HOST constant in the WordPress configuration file
 # to "redis".
 # This constant controls the hostname of the Redis server.
-wp config set WP_REDIS_HOST 'redis' --allow-root
+runuser -u www-data -- wp config set WP_REDIS_HOST 'redis'
 
 # It's a command that sets the value of the WP_REDIS_PORT constant in the WordPress configuration file
 # to "6379".
 # This constant controls the port of the Redis server.
-wp config set WP_REDIS_PORT '6379' --allow-root
+runuser -u www-data -- wp config set WP_REDIS_PORT '6379'
 
 # It's a command that sets the value of the WP_CACHE constant in the WordPress configuration file to
 # "true".
 # This constant controls whether the object cache is enabled or not.
-wp config set WP_CACHE 'true' --allow-root
-
-# It's a command that installs WordPress.
-wp core install --url=$DOMAIN_NAME --title="My Wordpress Site" --admin_user=$WP_admin_user --admin_password=$WP_admin_password --admin_email=$WP_admin_email --allow-root
-
-# It's creating a new user with the username of , the email of , the password of
-#  and the role of author.
-wp user create $WP_user $WP_user_email --user_pass=$WP_user_password --role='author' --allow-root
-
-# It's installing and activating the plugin of redis-cache.
-wp plugin install redis-cache --activate --allow-root
+runuser -u www-data -- wp config set WP_CACHE 'true'
 
 # It's a command that enables the object cache.
-wp redis enable --allow-root
+runuser -u www-data -- wp redis enable
 
 # It's a command that executes the command line arguments.
 exec "$@"
