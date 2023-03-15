@@ -118,14 +118,14 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/ariahi/db
+      device: /home/ariahi/data/db
   wp:
     name: WP
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/ariahi/wp
+      device: /home/ariahi/data/wp
 
 # It's creating a network called net and it's using the bridge driver.
 networks:
